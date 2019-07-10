@@ -48,13 +48,19 @@ response = requests.patch(base_url+"redfish/v1/Systems/system", data=paramdata, 
 print(response.url, response.status_code)
 # print(response.text)
 
-# post
-
 
 # delete
 delete_name = "ymh"
 response = requests.delete(base_url+"redfish/v1/AccountService/Accounts/"+delete_name, auth=(username, password), verify=False)
 
 print(response.url, response.status_code)
+
+
+# post
+add_data = json.dumps({"UserName": "ymh", "Password": "len0vO1"})
+response = requests.post(base_url+"redfish/v1/AccountService/Accounts", data=add_data, auth=(username, password), verify=False)
+
+print(response.url, response.status_code)
+
 
 
