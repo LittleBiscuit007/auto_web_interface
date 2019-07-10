@@ -1,15 +1,22 @@
 import requests
+import urllib3
+import json
 
-# 接口测试的根目录
-base_url = "https://10.245.22.445/"
+# 关闭ssl认证时，取消警告提示信息
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+# 接口测试的根目录和用户名-密码
+base_url = "https://10.245.36.148/"
+username = "root"
+password = "0penBmc"
 
 
-# url = "redfish/v1"
-# response = requests.get(base_url+"/redfish/v1")
-response = requests.get("https://www.baidu.com")
+headers = {"Content-Type": "application/json"}
+
+response = requests.get(base_url+"redfish/v1", headers=headers, auth=(username, password), verify=False)
 
 # 获取响应的状态码
-print(response.status_code)
+print(response.url, response.status_code)
 
 """
 1. 从文件中读取，判断是什么请求
@@ -29,5 +36,25 @@ print(response.status_code)
     PATCH 可能会去创建一个新的资源，像是 saveOrUpdate
     PUT 只对已有资源进行更新操作，所以是 update 操作
 '''
-response_p = requests.patch()
+paramdata = {"Boot": {"BootSourceOverrideEnabled": "Disabled", "BootSourceOverrideTarget": "Cd"}, "IndicatorLED": "On"}
+
+paramdata = json.dumps(paramdata)
+response = requests.patch(base_url+"redfish/v1/Systems/system", data=paramdata, auth=(username, password), verify=False)
+
+# 获取响应内容,并转换格式
+# result = json.dumps(json.loads(response.text), indent=4)
+# print(result)
+
+print(response.url, response.status_code)
+# print(response.text)
+
+# post
+
+
+# delete
+delete_name = "ymh"
+response = requests.delete(base_url+"redfish/v1/AccountService/Accounts/"+delete_name, auth=(username, password), verify=False)
+
+print(response.url, response.status_code)
+
 
